@@ -66,7 +66,9 @@ export async function POST(request: NextRequest) {
       requestData.serialNo = serialNo
     }
 
-    console.log('Attempting to connect to ClubDAM API:', requestData)
+    console.log('=== ClubDAM API Request Debug ===')
+    console.log('Request Data:', JSON.stringify(requestData, null, 2))
+    console.log('Target URL:', `${CLUBDAM_BASE_URL}/DkDamSearchServlet`)
 
     try {
       // 実際のAPIを試行（タイムアウト付き）
@@ -98,7 +100,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(enhancedData)
 
     } catch (fetchError) {
-      console.error('ClubDAM API connection failed:', (fetchError as Error).message)
+      console.error('=== FETCH ERROR DEBUG ===')
+      console.error('Error Type:', fetchError.constructor.name)
+      console.error('Error Message:', (fetchError as Error).message)
+      console.error('Error Stack:', (fetchError as Error).stack)
+      console.error('Full Error Object:', fetchError)
       
       // APIが利用できない場合の詳細なエラー情報を返す
       return NextResponse.json({ 
