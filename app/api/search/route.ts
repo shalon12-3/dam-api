@@ -55,11 +55,11 @@ export async function POST(request: NextRequest) {
       requestData.songMatchType = matchType
       requestData.songName = searchQuery
     } else if (searchType === 'artist') {
-      requestData.categoryCd = '010000'
+      requestData.categoryCd = '010000' 
       requestData.artistMatchType = matchType
       requestData.artistName = searchQuery
     } else if (searchType === 'category') {
-      requestData.categoryCd = categoryCd
+      requestData.categoryCd = categoryCd || '050100'
     }
 
     if (serialNo) {
@@ -77,13 +77,9 @@ export async function POST(request: NextRequest) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36',
           'Accept': 'application/json, text/plain, */*',
-          'Accept-Language': 'ja-JP,ja;q=0.9,en;q=0.8',
-          'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache',
-          'Referer': 'https://denmoku.clubdam.com/',
-          'Origin': 'https://denmoku.clubdam.com'
+          'Accept-Language': 'ja-JP,ja;q=0.9,en;q=0.8'
         },
         body: JSON.stringify(requestData),
         signal: controller.signal
