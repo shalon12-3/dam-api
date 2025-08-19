@@ -39,6 +39,7 @@ function enhanceWithDuration(response: any) {
 }
 
 
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -70,18 +71,19 @@ export async function POST(request: NextRequest) {
     try {
       // 実際のAPIを試行（タイムアウト付き）
       const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), 8000) // 8秒でタイムアウト
+      const timeoutId = setTimeout(() => controller.abort(), 10000) // 10秒でタイムアウト
 
       const response = await fetch(`${CLUBDAM_BASE_URL}/DkDamSearchServlet`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'User-Agent': 'Mozilla/5.0 (compatible; ClubDAMWebUI/1.0; +https://dam-api.vercel.app)',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
           'Accept': 'application/json, text/plain, */*',
           'Accept-Language': 'ja-JP,ja;q=0.9,en;q=0.8',
-          'Accept-Encoding': 'gzip, deflate, br',
           'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache'
+          'Pragma': 'no-cache',
+          'Referer': 'https://denmoku.clubdam.com/',
+          'Origin': 'https://denmoku.clubdam.com'
         },
         body: JSON.stringify(requestData),
         signal: controller.signal
