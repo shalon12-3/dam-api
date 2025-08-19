@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
 
     } catch (fetchError) {
       console.error('=== FETCH ERROR DEBUG ===')
-      console.error('Error Type:', fetchError.constructor.name)
+      console.error('Error Type:', (fetchError as any)?.constructor?.name || 'Unknown')
       console.error('Error Message:', (fetchError as Error).message)
       console.error('Error Stack:', (fetchError as Error).stack)
       console.error('Full Error Object:', fetchError)
