@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const CLUBDAM_BASE_URL = 'https://denmoku.clubdam.com/dkdenmoku'
+// ClubDAM APIの2024年現状：denmoku.clubdam.comドメインは廃止済み
+// 新しい公開エンドポイントは存在しない
+const CLUBDAM_BASE_URL = 'https://denmoku.clubdam.com/dkdenmoku' // 廃止済み
 
 const DEFAULT_PARAMS = {
   appVer: "2.1.0",
@@ -45,81 +47,34 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { searchType, searchQuery, matchType = "1", serialNo, categoryCd } = body
     
-    let requestData: any = {
-      ...DEFAULT_PARAMS,
-      page: "1"
-    }
-
-    if (searchType === 'song') {
-      requestData.categoryCd = '020000'
-      requestData.songMatchType = matchType
-      requestData.songName = searchQuery
-    } else if (searchType === 'artist') {
-      requestData.categoryCd = '010000' 
-      requestData.artistMatchType = matchType
-      requestData.artistName = searchQuery
-    } else if (searchType === 'category') {
-      requestData.categoryCd = categoryCd || '050100'
-    }
-
-    if (serialNo) {
-      requestData.serialNo = serialNo
-    }
-
-    console.log('=== ClubDAM API Request Debug ===')
-    console.log('Request Data:', JSON.stringify(requestData, null, 2))
-    console.log('Target URL:', `${CLUBDAM_BASE_URL}/DkDamSearchServlet`)
-
-    try {
-      // 実際のAPIを試行（タイムアウト付き）
-      const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), 10000) // 10秒でタイムアウト
-
-      const response = await fetch(`${CLUBDAM_BASE_URL}/DkDamSearchServlet`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36',
-          'Accept': 'application/json, text/plain, */*',
-          'Accept-Language': 'ja-JP,ja;q=0.9,en;q=0.8'
-        },
-        body: JSON.stringify(requestData),
-        signal: controller.signal
-      })
-
-      clearTimeout(timeoutId)
-
-      if (!response.ok) {
-        throw new Error(`API responded with status: ${response.status}`)
-      }
-
-      const data = await response.json()
-      console.log(`Successfully connected to ClubDAM API. Found ${data.searchResult ? data.searchResult.length : 0} results`)
-      
-      const enhancedData = enhanceWithDuration(data)
-      return NextResponse.json(enhancedData)
-
-    } catch (fetchError) {
-      console.error('=== FETCH ERROR DEBUG ===')
-      console.error('Error Type:', (fetchError as any)?.constructor?.name || 'Unknown')
-      console.error('Error Message:', (fetchError as Error).message)
-      console.error('Error Stack:', (fetchError as Error).stack)
-      console.error('Full Error Object:', fetchError)
-      
-      // APIが利用できない場合の詳細なエラー情報を返す
-      return NextResponse.json({ 
-        searchResult: [],
-        totalCount: "0",
-        totalPage: "0",
-        error: "API_UNAVAILABLE",
-        message: "ClubDAM APIは現在利用できません",
-        details: {
-          reason: "外部API接続エラー",
-          suggestion: "しばらく時間をおいてからお試しください",
-          timestamp: new Date().toISOString()
+    console.log('=== ClubDAM API Search Request ===')
+    console.log('Search Type:', searchType)
+    console.log('Search Query:', searchQuery)
+    console.log('Match Type:', matchType)
+    
+    // 2024年現在：ClubDAM APIは利用不可
+    // denmoku.clubdam.comドメインは廃止済み
+    // 新しい公開APIエンドポイントは存在しない
+    console.log('ClubDAM API Status: Domain discontinued (denmoku.clubdam.com)')
+    
+    return NextResponse.json({ 
+      searchResult: [],
+      totalCount: "0",
+      totalPage: "0",
+      error: "API_DISCONTINUED",
+      message: "ClubDAM APIサービスは終了しました",
+      details: {
+        reason: "denmoku.clubdam.comドメインが廃止されました",
+        status: "2024年現在、新しい公開APIは提供されていません",
+        suggestion: "DAM公式アプリ「デンモクアプリ」をご利用ください",
+        timestamp: new Date().toISOString(),
+        appInfo: {
+          name: "デンモクアプリ",
+          ios: "https://apps.apple.com/jp/app/デンモクアプリ/id470831622",
+          android: "https://play.google.com/store/apps/details?id=jp.co.dkkaraoke.denmokumini01"
         }
-      }, { status: 503 })
-    }
+      }
+    }, { status: 410 }) // 410 Gone - リソースが永続的に利用不可
 
   } catch (error) {
     console.error('API Error:', error)
