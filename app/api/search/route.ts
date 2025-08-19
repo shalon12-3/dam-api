@@ -100,8 +100,19 @@ export async function POST(request: NextRequest) {
     } catch (fetchError) {
       console.error('ClubDAM API connection failed:', (fetchError as Error).message)
       
-      // APIが利用できない場合はエラーを返す
-      throw new Error(`ClubDAM APIに接続できませんでした: ${(fetchError as Error).message}`)
+      // APIが利用できない場合の詳細なエラー情報を返す
+      return NextResponse.json({ 
+        searchResult: [],
+        totalCount: "0",
+        totalPage: "0",
+        error: "API_UNAVAILABLE",
+        message: "ClubDAM APIは現在利用できません",
+        details: {
+          reason: "外部API接続エラー",
+          suggestion: "しばらく時間をおいてからお試しください",
+          timestamp: new Date().toISOString()
+        }
+      }, { status: 503 })
     }
 
   } catch (error) {
